@@ -18,3 +18,4 @@ $ oc expose service vertx-wiki
 $ oc set env dc/vertx-wiki AB_ENABLED=jolokia; oc patch dc/vertx-wiki -p '{"spec":{"template":{"spec":{"containers":[{"name":"vertx-wiki","ports":[{"containerPort": 8778,"name":"jolokia"}]}]}}}}'
 $ oc set probe dc/vertx-wiki --readiness --get-url=http://:8080/api/health
 ----
+
