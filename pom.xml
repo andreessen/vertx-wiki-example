@@ -56,6 +56,10 @@
 		  <artifactId>vertx-codegen</artifactId>
 		  <scope>provided</scope>
 		</dependency>
+		<dependency>
+		 <groupId>io.vertx</groupId>
+		 <artifactId>vertx-health-check</artifactId>
+		</dependency>
         <dependency>
           <groupId>com.github.rjeschke</groupId>
           <artifactId>txtmark</artifactId>

@@ -1,6 +1,8 @@
 package ru.emdev.verx.demo.wiki.http;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import com.github.rjeschke.txtmark.Processor;
 
@@ -9,6 +11,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -16,6 +19,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 import ru.emdev.verx.demo.wiki.db.WikiDatabaseService;
 
@@ -40,8 +44,14 @@ public class HttpServerVerticle extends AbstractVerticle {
 		dbService = WikiDatabaseService.createProxy(vertx, wikiDbQueue);
 
 		HttpServer server = vertx.createHttpServer();
-
+		
 		Router router = Router.router(vertx);
+		// Health Check
+        router.get("/api/health").handler(ctx -> ctx.response().end("I'm ok"));
+        router.route().handler(CorsHandler.create("*")
+                .allowedMethods(new HashSet<>(Arrays.asList(HttpMethod.values())))
+                .allowedHeader("Origin, X-Requested-With, Content-Type, Accept, Authorization"));
+        
 		router.get("/").handler(this::indexHandler);
 		router.get("/wiki/:page").handler(this::pageRenderingHandler);
 		router.post().handler(BodyHandler.create());
